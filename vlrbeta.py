@@ -29,18 +29,6 @@ class Match:
         htmlText = requests.get(url)
         return bs(htmlText.content, "lxml")
 
-    def leftteam(self):
-        return self.team1_info[0]
-
-    def lefttwitter(self):
-        return self.team1_info[1]
-
-    def righttwitter(self):
-        return self.team2_info[1]
-
-    def rightteam(self):
-        return self.team2_info[0]
-
     def map(self):
         maps = [i.span.text.strip().replace('\n', '').replace('\t', '').replace('PICK', '') for i in
                 self.match.find_all('div', class_='map')]
