@@ -17,11 +17,45 @@ class Match:
     def __init__(self, link):
         self.link = link
         self.match = self.requester(link)
+        self.team_info = {
+            'team1': self.get_team_info(1),
+            'team2': self.get_team_info(2)
+        }
+        self.map_info = self.mapscore()
+        self.mvp_info = self.get_mvp()
 
     @staticmethod
     def requester(url):
         htmlText = requests.get(url)
         return bs(htmlText.content, "lxml")
+
+    def leftteam(self):
+        return self.team1_info[0]
+
+    def lefttwitter(self):
+        return self.team1_info[1]
+
+    def righttwitter(self):
+        return self.team2_info[1]
+
+    def rightteam(self):
+        return self.team2_info[0]
+
+    def map(self):
+        maps = [i.span.text.strip().replace('\n', '').replace('\t', '').replace('PICK', '') for i in
+                self.match.find_all('div', class_='map')]
+        return maps
+
+    def event(self):
+        event = self.match.find('div', style='font-weight: 700;').text.strip()
+        return event.replace('\n', '').replace('\t', '')
+
+    def round(self):
+        round = self.match.find('div', class_='match-header-event-series').text.strip()
+        return round.replace('\n', '').replace('\t', '')
+
+    def scores(self):
+        return [i.text.strip() for i in self.match.find_all('div', class_='score')]
 
     def get_team_logo_hl(self, url):
 
@@ -56,7 +90,8 @@ class Match:
         return logo_link
 
     def get_team_info(self, mod):
-        team_url = 'https://www.vlr.gg' + self.match.find('a', class_=f"match-header-link wf-link-hover mod-{mod}")['href']
+        team_url = 'https://www.vlr.gg' + self.match.find('a', class_=f"match-header-link wf-link-hover mod-{mod}")[
+            'href']
         team_link = self.requester(team_url)
         team_name = team_link.find('h1', class_='wf-title').text.strip()
         try:
@@ -74,46 +109,22 @@ class Match:
             elif logo_link == '/img/vlr/tmp/vlr.png':
                 logo_link = 'https://www.vlr.gg/img/vlr/tmp/vlr.png'
 
-        return team_name, twitter, logo_link
+        return {"team_name": team_name, "twitter": twitter, "logo_link": logo_link}
 
-    def map(self):
-        maps = [i.span.text.strip().replace('\n', '').replace('\t', '').replace('PICK', '') for i in self.match.find_all('div', class_='map')]
-        return maps
-
-    def event(self):
-        event = self.match.find('div', style='font-weight: 700;').text.strip()
-        return event.replace('\n', '').replace('\t', '')
-
-    def round(self):
-        round = self.match.find('div', class_='match-header-event-series').text.strip()
-        return round.replace('\n', '').replace('\t', '')
-
-    def scores(self):
-        return [i.text.strip() for i in self.match.find_all('div', class_='score')]
-
-    def leftteam(self):
-        left_team_name, _, _ = self.get_team_info(1)
-        return left_team_name
-
-    def lefttwitter(self):
-        _, left_twitter, _ = self.get_team_info(1)
-        return left_twitter
-
-    def righttwitter(self):
-        _, right_twitter, _ = self.get_team_info(2)
-        return right_twitter
-
-    def rightteam(self):
-        right_team_name, _, _ = self.get_team_info(2)
-        return right_team_name
 
     def mapscore(self):
-        mapscore = []
+        map_info = {}  # Initialize map_info as an empty dictionary
         maps = self.map()
         score = self.scores()
         for i in range(len(maps)):
-            mapscore.append((maps[i], score[i*2:i*2+2]))
-        return mapscore
+            winner = self.team_info['team1']['team_name'] if int(score[i*2]) > int(score[i*2+1]) else self.team_info['team2']['team_name']
+            map_info[maps[i]] = {'score': score[i*2:i*2+2], 'winner': winner}  # Add map information to map_info
+
+        # Update team_info with maps won
+        self.team_info['team1']['maps_won'] = sum(1 for map_info in map_info.values() if map_info['winner'] == self.team_info['team1']['team_name'])
+        self.team_info['team2']['maps_won'] = sum(1 for map_info in map_info.values() if map_info['winner'] == self.team_info['team2']['team_name'])
+
+        return map_info
 
     def get_mvp(self):
         acs = self.match.find_all('span', class_='stats-sq')
@@ -140,52 +151,15 @@ class Match:
         return {'player_name': playername, 'mvp_acs': mvpacs, 'agent': agent, 'twitter': mvptwitter, 'pic_link': pfp_link}
 
     def __str__(self):
-        output = ""
-        s = self.mapscore()
-        rightteam = self.rightteam()
-        leftteam = self.leftteam()
-        map = self.map()
-        ltwitter = self.lefttwitter()
-        rtwitter = self.righttwitter()
-        lwinner, rwinner = 0, 0
-        for i in range(len(s)):
-            if int(s[i][1][0]) > int(s[i][1][1]):
-                output += f"{leftteam} defeat {rightteam} {s[i][1][0]} to {s[i][1][1]} on {map[i]}.\n"
-                lwinner += 1
-            else:
-                output += f"{rightteam} defeat {leftteam} {s[i][1][1]} to {s[i][1][0]} on {map[i]}.\n"
-                rwinner += 1
-        winner = f"{ltwitter or leftteam} {lwinner}-{rwinner} {rtwitter or rightteam}"
-        final_score = f"{self.event()} {self.round()}\n{winner.lstrip()}\n{output}"
-        return final_score if len(final_score) <= 280 else f"{self.event()} {self.round()}\n\n{winner.lstrip()}\n\n{output}"
+        event_name = self.event()
+        round_name = self.round()
+        team1_twitter = self.team_info['team1']['twitter'] or self.team_info['team1']['team_name']
+        team2_twitter = self.team_info['team2']['twitter'] or self.team_info['team2']['team_name']
+        team1_maps_won = self.team_info['team1']['maps_won']
+        team2_maps_won = self.team_info['team2']['maps_won']
+        mvp_twitter = self.mvp_info['twitter'] or self.mvp_info['player_name']
 
-m = Match("https://www.vlr.gg/336088/shopify-rebellion-vs-misu-s-qts-game-changers-2024-north-america-series-2-sf")
-
-
-class MatchInfo:
-    def __init__(self, match):
-        self.event_name = match.event()
-        self.round = match.round()
-
-        team1_name, team1_twitter, team1_logo = match.get_team_info(1)
-        team2_name, team2_twitter, team2_logo = match.get_team_info(2)
-
-        self.team_info = {
-            team1_name: {'twitter': team1_twitter, 'logo': team1_logo, 'maps_won': 0},
-            team2_name: {'twitter': team2_twitter, 'logo': team2_logo, 'maps_won': 0}
-        }
-
-        self.map_info = {}  # Initialize map_info as an empty dictionary
-        for map_name, scores in match.mapscore():
-            winner = team1_name if int(scores[0]) > int(scores[1]) else team2_name
-            self.team_info[winner]['maps_won'] += 1
-            self.map_info[map_name] = {'score': scores, 'winner': winner}  # Add map information to map_info
-        self.mvp_info = match.get_mvp()
-
-    def __str__(self):
-        team1_name, team1_info = list(self.team_info.items())[0]
-        team2_name, team2_info = list(self.team_info.items())[1]
-        return f"{team1_info['twitter'] or team1_name} {team1_info['maps_won']}-{team2_info['maps_won']} {team2_info['twitter'] or team2_name}"
+        return f"{event_name} ({round_name})\n{team1_twitter} {team1_maps_won} - {team2_maps_won} {team2_twitter}\nMVP: {mvp_twitter}"
 
 def live_matches():
     match = requester('https://www.vlr.gg/matches')
@@ -213,7 +187,9 @@ def requester(url):
 
 #print(live_matches())
 
-#mi = MatchInfo(Match("https://www.vlr.gg/336090/shopify-rebellion-vs-flyquest-red-game-changers-2024-north-america-series-2-gf"))
+mi = Match("https://www.vlr.gg/336090/shopify-rebellion-vs-flyquest-red-game-changers-2024-north-america-series-2-gf")
 
-#print(mi.mvp_info)
-
+print(mi)
+print(mi.team_info)
+print(mi.map_info)
+print(mi.mvp_info)
