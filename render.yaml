@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: my-app
-    dockerfilePath: ./Dockerfile
-    startCommand: gunicorn -w 4 wsgi:application
-    healthCheckPath: /health
