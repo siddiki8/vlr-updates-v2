@@ -11,6 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from xml_grabber import get_stats
 
 class Match:
     def __init__(self, link):
@@ -22,6 +23,8 @@ class Match:
         }
         self.map_info = self.mapscore()
         self.mvp_info = self.get_mvp()
+        self.event = self.event()
+        self.round = self.round()
 
     @staticmethod
     def requester(url):
@@ -96,7 +99,7 @@ class Match:
             elif logo_link == '/img/vlr/tmp/vlr.png':
                 logo_link = 'https://www.vlr.gg/img/vlr/tmp/vlr.png'
 
-        return {"team_name": team_name, "twitter": twitter, "logo_link": logo_link}
+        return {"team_name": team_name, "twitter": twitter, "logo": logo_link}
 
 
     def mapscore(self):
@@ -114,28 +117,24 @@ class Match:
         return map_info
 
     def get_mvp(self):
-        acs = self.match.find_all('span', class_='stats-sq')
-        swag = [col for row in acs for col in row.find_all('span', class_='side mod-side mod-both') if col]
-        nlist = ['https://www.vlr.gg' + name.find('a', href=True)['href'] for name in self.match.find_all('td', class_='mod-player')]
-
-        maplen = self.match.find_all('div', class_='match-header-vs-note')[1].text.lstrip()[2:]
-        acs1 = re.sub(r'\D', '', str(swag[1 if maplen == '1' else 31]))
-        acs2 = re.sub(r'\D', '', str(swag[16 if maplen == '1' else 46]))
-
-        mvpname = nlist[10 if acs1 > acs2 else 15]
-        mvpacs = acs1 if acs1 > acs2 else acs2
-
-        player = self.requester(mvpname)
-        playername = player.find('h1', class_='wf-title').text.strip().replace('\t', '').replace(' ', '')
-        agent = player.find('img', style='display: block; width: 24px; height: 24px; background: #ccc; border-radius: 2px; image-rendering: -webkit-optimize-contrast;')['alt']
-        mvptwitter = player.find('a', style="margin-top: 3px; display: block;").text.strip() if player.find('a', style="margin-top: 3px; display: block;") else None
+        dictionary = get_stats(self.link)
+    
+        if float(dictionary["top"]["rating"]) > float(dictionary["bottom"]["rating"]):
+            mvp_loc = 'top'
+        
+        else:
+            mvp_loc = 'bottom'
+        
+        player = self.requester(dictionary[mvp_loc]['url'])
         pfp_link = player.find('div', class_='wf-avatar mod-player').find('img')['src']
         if pfp_link.startswith('//'):
             pfp_link = 'https:' + pfp_link
         elif pfp_link == "/img/base/ph/sil.png":
             pfp_link = 'https://www.vlr.gg/img/base/ph/sil.png'
-
-        return {'player_name': playername, 'mvp_acs': mvpacs, 'agent': agent, 'twitter': mvptwitter, 'pic_link': pfp_link}
+        
+        dictionary[mvp_loc]['url'] = pfp_link
+        
+        return dictionary[mvp_loc]
 
     def __str__(self):
         event_name = self.event()

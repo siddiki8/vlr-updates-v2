@@ -3,20 +3,14 @@ import random
 import os
 import requests
 from io import BytesIO
-from vlrbeta import MatchInfo, Match
-from xml_grabber import XML_links
+from vlrbeta import Match
 
-match_link = 'https://www.vlr.gg/323260/xipto-esports-vs-boba-game-changers-2024-southeast-asia-stage-1-gf'
+match_link = 'https://www.vlr.gg/314646/cloud9-vs-furia-champions-tour-2024-americas-stage-1-w4'
 
-xlinks = XML_links(match_link)
-m = Match(match_link, xlinks)
-match_info = MatchInfo(m)
+
+m = Match(match_link)
+
         
-print(match_info)
-print(match_info.event_name)
-print(match_info.round)
-print(match_info.map_info)
-print(match_info.team_info)
 
 
 # Construct final twitter image
@@ -24,7 +18,7 @@ print(match_info.team_info)
 class Twimage:
 
     def __init__(self, match_info):
-        self.event = match_info.event_name
+        self.event = match_info.event
         self.round = match_info.round
         self.map_info = match_info.map_info
         self.team_info = match_info.team_info
@@ -32,13 +26,13 @@ class Twimage:
         self.mvp2 = match_info.mvp_info
         self.mvp = {
 
-            "name": self.mvp2['player_name'],
+            "name": self.mvp2['name'],
             "K/D": self.mvp2['kills'] + "/" + self.mvp2['deaths'] + "/" + self.mvp2['assists'],
-            "ACS": self.mvp2['mvp_acs'],
+            "ACS": self.mvp2['acs'],
             "+/-": self.mvp2['pm'],
             "HSP": self.mvp2['hsp'],
             "agent": self.mvp2['agent'],
-            "img": self.mvp2['image']
+            "img": self.mvp2['url']
 
         } 
         self.template = Image.new("RGBA", (1600, 900), (0, 0, 0, 0))
@@ -261,7 +255,7 @@ class Twimage:
         pass
 
 
-t = Twimage(match_info)
+t = Twimage(m)
 
 t.create_background()
 t.final_score()
