@@ -2,7 +2,7 @@ import os
 import vlrbeta as vlr
 import imgen
 import tweepy
-import dotenv
+from dotenv import load_dotenv
 
 load_dotenv('.env')
 
