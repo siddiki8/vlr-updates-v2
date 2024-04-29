@@ -39,6 +39,3 @@ class Tweet:
 
         # Remove the image file after tweeting
         os.remove(image_path)
-
-t = Tweet()
-t.tweet_match("https://www.vlr.gg/314647/nrg-esports-vs-evil-geniuses-champions-tour-2024-americas-stage-1-w4")
