@@ -3,7 +3,6 @@ import random
 import os
 import requests
 from io import BytesIO
-from vlrbeta import Match
 
 # Construct final twitter image
 class Twimage:
@@ -44,7 +43,6 @@ class Twimage:
 
         stages = os.listdir("Assets/STAGES")
         image_path = ("Assets/STAGES/" + str(random.choice(stages)))
-        print(image_path)
         image_to_paste = Image.open(image_path).convert("RGBA")
         self.template.paste(image_to_paste, (0,0,1600,900), mask=image_to_paste)
         

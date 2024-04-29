@@ -143,8 +143,8 @@ class Match:
         return dictionary[mvp_loc]
 
     def __str__(self):
-        event_name = self.event()
-        round_name = self.round()
+        event_name = self.event
+        round_name = self.round
         team1_twitter = self.team_info['team1']['twitter'] or self.team_info['team1']['team_name']
         team2_twitter = self.team_info['team2']['twitter'] or self.team_info['team2']['team_name']
         team1_maps_won = self.team_info['team1']['maps_won']
