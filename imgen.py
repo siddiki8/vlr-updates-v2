@@ -6,8 +6,7 @@ from io import BytesIO
 from vlrbeta import MatchInfo, Match
 from xml_grabber import XML_links
 
-match_link = 'https://www.vlr.gg/314644/g2-esports-vs-mibr-champions-tour-2024-americas-stage-1-w4'
-
+match_link = 'https://www.vlr.gg/323260/xipto-esports-vs-boba-game-changers-2024-southeast-asia-stage-1-gf'
 
 xlinks = XML_links(match_link)
 m = Match(match_link, xlinks)
