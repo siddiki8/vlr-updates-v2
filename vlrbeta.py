@@ -169,15 +169,7 @@ def live_matches():
 def is_completed(matchurl):
     game = requester(matchurl)
     return game.find('div', class_='match-header-vs-note').text.strip() == 'final'
+
 def requester(url):
   htmlText = requests.get(url)
   return bs(htmlText.content, "lxml")
-
-#print(live_matches())
-
-mi = Match("https://www.vlr.gg/336090/shopify-rebellion-vs-flyquest-red-game-changers-2024-north-america-series-2-gf")
-
-print(mi)
-print(mi.team_info)
-print(mi.map_info)
-print(mi.mvp_info)
