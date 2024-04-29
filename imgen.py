@@ -5,16 +5,7 @@ import requests
 from io import BytesIO
 from vlrbeta import Match
 
-match_link = 'https://www.vlr.gg/314646/cloud9-vs-furia-champions-tour-2024-americas-stage-1-w4'
-
-
-m = Match(match_link)
-
-        
-
-
 # Construct final twitter image
-
 class Twimage:
 
     def __init__(self, match_info):
@@ -22,17 +13,16 @@ class Twimage:
         self.round = match_info.round
         self.map_info = match_info.map_info
         self.team_info = match_info.team_info
-        #self.mvp = match_info.mvp_info
-        self.mvp2 = match_info.mvp_info
+        self.mvp_info = match_info.mvp_info
         self.mvp = {
 
-            "name": self.mvp2['name'],
-            "K/D": self.mvp2['kills'] + "/" + self.mvp2['deaths'] + "/" + self.mvp2['assists'],
-            "ACS": self.mvp2['acs'],
-            "+/-": self.mvp2['pm'],
-            "HSP": self.mvp2['hsp'],
-            "agent": self.mvp2['agent'],
-            "img": self.mvp2['url']
+            "name": self.mvp_info['name'],
+            "K/D": self.mvp_info['kills'] + "/" + self.mvp_info['deaths'] + "/" + self.mvp_info['assists'],
+            "ACS": self.mvp_info['acs'],
+            "+/-": self.mvp_info['pm'],
+            "HSP": self.mvp_info['hsp'],
+            "agent": self.mvp_info['agent'],
+            "img": self.mvp_info['url']
 
         } 
         self.template = Image.new("RGBA", (1600, 900), (0, 0, 0, 0))
@@ -47,7 +37,6 @@ class Twimage:
     def urlpull(self, url):
         team_logo = requests.get(url)
         return Image.open(BytesIO(team_logo.content)).convert("RGBA")
-        # true white appearing as black
 
 # Choose random background image (stages) and add final box and MVP box
 
@@ -95,8 +84,6 @@ class Twimage:
         center_y = (end_y - start_y) / 1.4 + start_y
 
         draw.text((center_x - text_width / 2, center_y - 100), matchscore_text, font=self.font, fill="white")
-
-        
         
 # Add each map icon for the maps that were played and add boxes to them (adjust for series length) and add map scores 
 
@@ -104,9 +91,15 @@ class Twimage:
         
         base_space_val = 100
         map_count = len(self.map_info)
-        space_increment = base_space_val//map_count
+        if map_count == 1:
+            space_increment = 30
+        else:
+            space_increment = base_space_val//map_count
         start_coords = [81, 410]
-        end_coords = [81, (820 - space_increment)]
+        if map_count == 1:
+            end_coords = [81, 620]
+        else:
+            end_coords = [81, (820 - space_increment)]
         vertical_space = (end_coords[1] - start_coords[1])
         negative_space = space_increment * (map_count)
         
@@ -114,7 +107,12 @@ class Twimage:
         map_box = Image.open("Assets\MISC\map_box_transparent.png").convert("RGBA")
 
         map_box_width = (map_box.size[0])
-        map_box_height = (vertical_space - negative_space) // map_count
+
+        if map_count == 1:
+            map_box_height = int((vertical_space - negative_space) / 1.5)   
+
+        else:
+            map_box_height = (vertical_space - negative_space) // map_count
 
         resized_map_box = map_box.resize((map_box_width, map_box_height))
         first_gap = space_increment
@@ -184,17 +182,13 @@ class Twimage:
                     self.template.paste(logo2_img, (73 + int(text_offset) + w + GAP_TEXT, (3*text_indent + start_coords[1] + (map_box_gap)*(k)) + first_gap*(k+1)), mask=logo2_img)
 
             k += 1
-            
-       
-
 
 # Add MVP image and stats and agent
 
-    
     def add_mvp(self):
 
-        start_coords = [757, 700]
-        end_coords = [1031, 700]
+        start_coords = [757, 740]
+        end_coords = [1031, 740]
         draw = ImageDraw.Draw(self.template)
         text_size = 21
         
@@ -210,7 +204,7 @@ class Twimage:
             if self.mvp[stat] == (mvp_name):
 
                
-                name_coords = [758, 234]
+                name_coords = [758, 680]
                 #name_end_coords = [1020, 234]
                 text_name_construction = str((self.mvp[stat]))
                 font = ImageFont.truetype("Assets\MISC\RussoOne-Regular.ttf", 40)
@@ -244,20 +238,28 @@ class Twimage:
         self.template.paste(agent_image, (850, -20), mask=agent_image)
 
         mvp_img = self.urlpull(self.mvp_guy_link)
-        resized_mvp_img = mvp_img.resize((250, 272), reducing_gap= 2.0)
-        self.template.paste(resized_mvp_img, (770, 310), mask=resized_mvp_img)
+        resized_mvp_img = mvp_img.resize((250, 250), reducing_gap= 2.0)
+        self.template.paste(resized_mvp_img, (770, 323), mask=resized_mvp_img)
 
-        self.template.show()
+#Add stage name and round
+
+    def add_stageinfo(self):
+        
+        start_coords = [75, 35]
+        draw = ImageDraw.Draw(self.template)
+        text_size = 22
+
+        text_construction = str(self.event) + ": (" + str(self.round) + ")"
+
+        font = ImageFont.truetype("Assets\MISC\RussoOne-Regular.ttf", text_size)
+        draw.text((start_coords[0], start_coords[1]), text_construction, font=font, fill='white')
 
 # Construct final image    
 
     def construct_image(self):
-        pass
-
-
-t = Twimage(m)
-
-t.create_background()
-t.final_score()
-t.add_maps()
-t.add_mvp()
+        self.create_background()
+        self.final_score()
+        self.add_maps()
+        self.add_mvp()
+        self.add_stageinfo()
+        return self.template

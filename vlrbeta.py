@@ -132,7 +132,13 @@ class Match:
         elif pfp_link == "/img/base/ph/sil.png":
             pfp_link = 'https://www.vlr.gg/img/base/ph/sil.png'
         
+        try:
+            mvptwitter = player.find('a',style="margin-top: 3px; display: block;").text.lstrip()
+        except:
+            mvptwitter = None
+            
         dictionary[mvp_loc]['url'] = pfp_link
+        dictionary[mvp_loc]['twitter'] = mvptwitter
         
         return dictionary[mvp_loc]
 
