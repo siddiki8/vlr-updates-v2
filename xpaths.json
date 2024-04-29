@@ -1,0 +1,32 @@
+{"top": {
+
+            "name": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[1]/table/tbody/tr[1]/td[1]/div/a/div[1]",
+            "url": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[1]/table/tbody/tr[1]/td[1]/div//a/@href",
+            "rating": "/html/body/div[5]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[1]/table/tbody/tr[1]/td[3]/span/span[1]" ,
+            "acs": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[1]/table/tbody/tr[1]/td[4]/span/span[1]",
+            "kills": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[1]/table/tbody/tr[1]/td[5]/span/span[1]",
+            "deaths": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[1]/table/tbody/tr[1]/td[6]/span/span[2]/span[1]" ,
+            "assists": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[1]/table/tbody/tr[1]/td[7]/span/span[1]" ,
+            "pm": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[1]/table/tbody/tr[1]/td[8]/span/span[1]" ,
+            "hsp": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[1]/table/tbody/tr[1]/td[11]/span/span[1]",
+            "agent": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div/div[1]/table/tbody/tr[1]/td[2]/div/span[1]//img/@title"
+            
+    },
+
+"bottom": {
+
+            "name": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[2]/table/tbody/tr[1]/td[1]/div/a/div[1]",
+            "url": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[2]/table/tbody/tr[1]/td[1]/div//a/@href" ,
+            "rating": "/html/body/div[5]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[2]/table/tbody/tr[1]/td[3]/span/span[1]" ,
+            "acs": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[2]/table/tbody/tr[1]/td[4]/span/span[1]" ,
+            "kills": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[2]/table/tbody/tr[1]/td[5]/span/span[1]" ,
+            "deaths": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[2]/table/tbody/tr[1]/td[6]/span/span[2]/span[1]",
+            "assists": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[2]/table/tbody/tr[1]/td[7]/span/span[1]",
+            "pm": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[2]/table/tbody/tr[1]/td[8]/span/span[1]",
+            "hsp": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[2]/table/tbody/tr[1]/td[11]/span/span[1]",
+            "agent": "//*[@id=\"wrapper\"]/div[1]/div[3]/div[6]/div/div[3]/div[2]/div[2]/div[2]/table/tbody/tr[1]/td[2]/div/span[1]//img/@title"
+    }
+}
+
+
+
