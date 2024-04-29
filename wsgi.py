@@ -1,4 +1,4 @@
-from main import main
+from app import main
 
 def application(environ, start_response):
     path = environ.get('PATH_INFO', '').lstrip('/')
