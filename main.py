@@ -3,6 +3,7 @@ import handler
 import time
 from keep_alive import keep_alive
 
+t = handler.Tweet()
 def main():
     live_list = []
     while True:
@@ -19,7 +20,7 @@ def main():
                 clist.append(match)       # Add match to list of completed matches
 
         for i in clist:                # Iterate through list of completed matches
-            handler.tweet()  # Tweet completed match
+            t.tweet_match(i)  # Tweet completed match
         time.sleep(60)
 
 if __name__ == "__main__":
