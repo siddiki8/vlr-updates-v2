@@ -1,20 +1,12 @@
-from flask import Flask
-from threading import Thread
+from wsgiref.simple_server import make_server
 
-# USED TO KEEP THE SCRIP RUNNING ONLINE
+def application(environ, start_response):
+    status = '200 OK'
+    headers = [('Content-type', 'text/plain; charset=utf-8')]
+    start_response(status, headers)
+    return [b"I'm alive"]
 
-app = Flask('')
-
-
-@app.route('/')
-def home():
-  return "I'm alive"
-
-
-def run():
-  app.run(host='0.0.0.0', port=8080)
-
-
-def keep_alive():
-  t = Thread(target=run)
-  t.start()
+# Create a simple WSGI server and run the application
+with make_server('', 8080, application) as httpd:
+    print("Serving on port 8080...")
+    httpd.serve_forever()

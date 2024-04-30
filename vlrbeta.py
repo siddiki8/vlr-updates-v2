@@ -121,7 +121,6 @@ class Match:
     
         if float(dictionary["top"]["rating"]) > float(dictionary["bottom"]["rating"]):
             mvp_loc = 'top'
-        
         else:
             mvp_loc = 'bottom'
         
@@ -136,9 +135,11 @@ class Match:
             mvptwitter = player.find('a',style="margin-top: 3px; display: block;").text.lstrip()
         except:
             mvptwitter = None
+
             
         dictionary[mvp_loc]['url'] = pfp_link
         dictionary[mvp_loc]['twitter'] = mvptwitter
+        dictionary[mvp_loc]['player_name'] = dictionary[mvp_loc]['player']
         
         return dictionary[mvp_loc]
 
