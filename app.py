@@ -1,10 +1,16 @@
+from flask import Flask
 import vlrbeta as vlr
 import handler
 import time
-#from keep_alive import keep_alive
 
-t = handler.Tweet()
-def main():
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello World!'
+
+def run_job():
+    t = handler.Tweet()
     live_list = []
     while True:
         clist = []
@@ -34,5 +40,4 @@ def main():
         time.sleep(60)
 
 if __name__ == "__main__":
-    #eep_alive()
-    main()
+    run_job()
