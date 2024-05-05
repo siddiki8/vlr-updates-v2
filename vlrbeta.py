@@ -139,7 +139,7 @@ class Match:
             
         dictionary[mvp_loc]['url'] = pfp_link
         dictionary[mvp_loc]['twitter'] = mvptwitter
-        dictionary[mvp_loc]['player_name'] = dictionary[mvp_loc]['player']
+        dictionary[mvp_loc]['player_name'] = dictionary[mvp_loc]['name']
         
         return dictionary[mvp_loc]
 
